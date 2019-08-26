@@ -31,10 +31,10 @@
 
 ```shell
 user  nginx;
-worker_processes  1;
+worker_processes  1; # 设置工作进程的数量
 
-error_log  /var/log/nginx/error.log warn;
-pid        /var/run/nginx.pid;
+error_log  /var/log/nginx/error.log warn; #nginx 错误日志
+pid        /var/run/nginx.pid; # nginx.pid存放的是nginx的master进程的进程号
 
 
 events {
