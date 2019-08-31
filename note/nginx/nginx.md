@@ -11,7 +11,6 @@
 - 跨域
 - 代理请求
 - location拦截详解
-- 静态资源
 - gzip
 - 防盗链
 - 反向代理、正向代理
@@ -241,3 +240,236 @@ server {
 
 ### location拦截详解
 
+#### 修饰符
+
+- `=`: 精确匹配路径
+- `~`: 表示用该符号后面的正则去匹配路径，区分大小写
+- `~*`: 表示用该符号后面的正则去匹配路径，不区分大小写
+- `^~`: 表示如果该符号后面的字符是最佳匹配，采用该规则，不再进行后续的查找。
+
+```shell
+location = / {
+    [ configuration A ]
+}
+
+location / {
+    [ configuration B ]
+}
+
+location /api/ {
+    [ configuration C ]
+}
+
+location ^~ /static/ {
+    [ configuration D ]
+}
+
+location ~* \.(gif|jpg|jpeg)$ {
+    [ configuration E ]
+}
+```
+
+请求/精准匹配A，不再往下查找。
+
+请求/index.html匹配B。首先查找匹配的前缀字符，找到最长匹配是配置B，接着又按照顺序查找匹配的正则。结果没有找到，因此使用先前标记的最长匹配，即配置B。
+
+请求/api/list 匹配C。首先找到最长匹配C，由于后面没有匹配的正则，所以使用最长匹配C。
+
+请求/user/1.jpg匹配E。首先进行前缀字符的查找，找到最长匹配项C，继续进行正则查找，找到匹配项E。因此使用E。
+
+请求/static/img.jpg匹配D。首先进行前缀字符的查找，找到最长匹配D。但是，特殊的是它使用了^~修饰符，不再进行接下来的正则的匹配查找，因此使用D。这里，如果没有前面的修饰符，其实最终的匹配是E。
+
+请求/router/pageA 匹配B。因为B表示任何以/开头的URL都匹配。在上面的配置中，只有B能满足，所以匹配B。
+
+### gzip
+
+#### 配置说明
+
+```shell
+# gzip 默认off 默认关闭gzip
+gzip             on;
+# gzip_min_length 默认0
+# 作用域: http, server, location
+# 设置允许压缩的页面最小字节数，页面字节数从header头中的Content-Length中进行获取。
+# 默认值是0，不管页面多大都压缩。
+# 建议设置成大于1k的字节数，小于1k可能会越压越大。 即: gzip_min_length 1024
+gzip_min_length  1k;
+# gzip_comp_level 默认 1 范围 1 ~ 9
+# 作用域: http, server, location
+# gzip压缩比，1 压缩比最小处理速度最快，9 压缩比最大但处理最慢（传输快但比较消耗cpu）。
+gzip_comp_level  6;
+# 默认值: gzip_types text/html
+# 作用域: http, server, location
+# 匹配MIME类型进行压缩，（无论是否指定）"text/html"类型总是会被压缩的。
+# 注意：如果作为http server来使用，主配置文件中要包含文件类型配置文件
+gzip_types       text/plain application/x-javascript text/css application/xml application/javascript application/json;
+```
+
+#### 代码演示
+
+```shell
+server {
+  listen 9002;
+  #gzip on;
+  location / {
+    root /usr/local/etc/nginx/servers/;
+    index gzip.html;
+  }
+}
+```
+
+我们先记录下未开启gzip时加载的文件大小
+![without-gzip](https://github.com/zhouatie/front-end/tree/master/note/nginx/data/without-gzip.png)
+
+size 显示的是1.3kb
+
+然后我们将gzip注释去掉的结果如下
+
+![with-gzip](https://github.com/zhouatie/front-end/tree/master/note/nginx/data/without-gzip.png)
+
+可以看到只有300B了，当然你还可以根据其他配置，比如来控制压缩等级来控制输出的大小。我们前端项目打包的时候可以开启gzip，这样nginx就不用在服务器上进行gzip压缩了。
+
+### 防盗链
+
+```shell
+location ~ .*\.(jpg|png|gif)$ {
+  valid_referers none blocked 47.104.184.134;
+  if ($invalid_referer) {
+    return 403;
+  }
+  root /data/images;
+}
+```
+
+valid_referers none | blocked | server_names | string ....;
+none 检测Referer头域不存在的请求
+blocked 检测Referer头域的值被防火墙或者代理服务器删除或伪装的情况。
+这种情况下，该头域的值不以“http://”或者“https：//”开头
+server_names 设置一个或多个URL,检测Referer头域的值是否是这些URL中的某个。
+从nginx 0.5.33以后支持使用通配符“*”。
+
+`valid_referers` 用于支持访问该资源的referers
+
+$invalid_referer 这个变量为true 表示不符合上面定义的规则。就return 403
+
+### 反向代理、正向代理
+
+#### 正向代理
+
+```shell
+location / {
+  proxy_pass http://$http_host$request_uri;
+}
+```
+
+正向代理你可以理解为代理客户端，比如VPN。因为国内无法访问国外的网站，所以通过将请求转发到VPN服务器，VPN将你的请求原封不动的转发到国外网址。正向代理，客户端知道服务端，服务端不知道客户端。
+
+#### 反向代理
+
+比如说下面将会讲到的负载均衡。所有请求统一走到一个nginx服务上，由这个nginx服务讲请求分配到多台服务器上。
+
+### 负载均衡
+
+#### 代码演示
+
+```shell
+.
+├── 9004.html
+├── 9005.html
+├── 9006.html
+└── upstream.conf
+```
+
+```shell
+server {
+	listen 9004;
+	location / {
+		root /usr/local/etc/nginx/servers/;
+		index 9004.html;
+	}
+}
+server {
+        listen 9005;
+        location / {
+                root /usr/local/etc/nginx/servers/;
+                index 9005.html;
+        }
+}
+server {
+        listen 9006;
+        location / {
+                root /usr/local/etc/nginx/servers/;
+                index 9006.html;
+        }
+}
+upstream atie {
+	server localhost:9004;
+    server localhost:9005;
+    server localhost:9006;
+}
+
+server {
+	listen 9003;
+	location / {
+		proxy_pass http://atie;
+	}
+
+}
+```
+
+通过上面代码可以看到我通过访问9003端口，均衡到其他端口。
+
+打开浏览器访问 localhost:9003 可以看到页面会分别加载9004 ~ 9006.html 页面
+
+#### 配置介绍
+
+| 状态 | 描述 |
+| ------ | ------ |
+| down | 不参与负载均衡 |
+| backup | 备份的服务器 |
+| max_fails | 允许请求失败的次数 |
+| fail_timeout | 经过max_fails失败后，服务暂停的时间 |
+| max_conns | 限制最大的接收的连接数 |
+| weight | 权重比 |
+
+```shell
+upstream atie {
+	server localhost:9004 down; # 这里如果加了down 表示负载均衡的时候就不会转到这个服务
+    server localhost:9005 backup; # 表示备份 只有当服务挂了，才会走到这个备份服务上
+    server localhost:9006 max_fails=1 fail_timeout=10s; # 超过最大次数后，在fail_timeout时间内，新的请求将不会分配给这台机器。
+}
+```
+
+```shell
+upstream atie {
+	server localhost:9004 weight=1;
+    server localhost:9005 weight=2;
+    server localhost:9006 weight=3;
+}
+```
+
+当你访问6次时，一次走到9004 2次走到9005 3次走到9006
+
+### 缓存
+
+通过添加缓存请求头设置过期时间等
+
+```shell
+location ~ .*\.(gif|jpg|png|css|js)(.*) {
+    expires 90d; # 设置有效90天
+}
+```
+
+### rewrite
+
+rewrite功能就是，使用nginx提供的全局变量或自己设置的变量，结合正则表达式和标志位实现url重写以及重定向。rewrite只能放在server{},location{},if{}中，并且只能对域名后边的除去传递的参数外的字符串起作用
+
+```shell
+location / {
+    rewrite /rewrite/(.*) http://www.$1.com;
+    return 200 "ok";
+}
+# 在浏览器中输入 127.0.0.1:8080/rewrite/google
+# 则临时重定向到 www.google.com
+# 后面的 return 指令将没有机会执行了
+```
