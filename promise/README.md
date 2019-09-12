@@ -1,3 +1,6 @@
+# 手写Promise
+
+```javascript
 class TPromise {
   static PENDING = 'PENDING';
   static RESOLVED = 'RESOLVED';
@@ -167,3 +170,5 @@ class TPromise {
     })
   }
 }
+
+```
