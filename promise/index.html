@@ -9,18 +9,150 @@
 <body>
   <script src="./TPromise.js"></script>
   <script>
-
-  const p1 = new TPromise((resolve, reject) => {
-    console.log('promise')
+// TPromise测试用例1
+  new Promise((resolve, reject) => {
+    console.log('resolve1')
     setTimeout(() => {
-      console.log('resolve')
-      resolve('hah')
+      console.log('timeout1')
+      reject('haha')
     }, 1000)
+  }).catch(12).finally((res) => {
+    console.log(res, 'this is finally')
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('finally')
+      }, 1000)
+    })
+  }).then((res) => {
+    console.log(res, 'reject2')
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log('timeout2')
+        resolve('this is error')
+      }, 1000)
+    })
+    console.log(res)
+  }, err => {
+    console.log(err, 'err')
+  }).catch(err => {
+    console.log('reject3')
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log('timeout3')
+        reject('error2')
+      })
+    })
+  }).then((res) =>{
+    console.log('then res=============', res)
+  }, err => {
+    console.log('catch res=================', err)
   })
 
-  p1.then((val) => {
-    console.log('then', val)
+  setTimeout(() => {
+    new TPromise((resolve, reject) => {
+    console.log('resolve1')
+    setTimeout(() => {
+      console.log('timeout1')
+      reject('haha')
+    }, 1000)
+  }).catch(12).finally((res) => {
+    console.log(res, 'this is finally')
+    return new TPromise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('finally')
+      }, 1000)
+    })
+  }).then((res) => {
+    console.log(res, 'reject2')
+    return new TPromise((resolve, reject) => {
+      setTimeout(() => {
+        console.log('timeout2')
+        resolve('this is error')
+      }, 1000)
+    })
+    console.log(res)
+  }, err => {
+    console.log(err, 'err')
+  }).catch(err => {
+    console.log('reject3')
+    return new TPromise((resolve, reject) => {
+      setTimeout(() => {
+        console.log('timeout3')
+        reject('error2')
+      })
+    })
+  }).then((res) =>{
+    console.log('then res======', res)
+  }, err => {
+    console.log('catch res=======', err)
   })
+  }, 4000)
+
+//  TPromise.all测试用例2
+TPromise.all([new TPromise((resolve, reject) => {
+  setTimeout(() => {
+    console.log('timeout1')
+    resolve('hah')
+  }, 2000)
+}),new TPromise((resolve, reject) => {
+  setTimeout(() => {
+    console.log('timeout2')
+    reject('xixi')
+  }, 1000)
+})]).then(res => {
+  console.log('resolve', res)
+}, err => {
+  console.log('reject', err)
+})
+
+// TPromise.race测试用例3
+TPromise.race([new TPromise((resolve, reject) => {
+  setTimeout(() => {
+    console.log('timeout1')
+    resolve('hah')
+  }, 2000)
+}),new TPromise((resolve, reject) => {
+  setTimeout(() => {
+    console.log('timeout2')
+    resolve('xixi')
+  }, 1000)
+})]).then(res => {
+  console.log('resolve', res)
+}, err => {
+  console.log('reject', err)
+})
+
+// Promise.resolve 测试用例4
+TPromise.resolve('hah').then((res) => {
+  console.log('resolve', res)
+}, err => {
+  console.log('reject', err)
+})
+TPromise.resolve(new TPromise((resolve, reject) => {
+  setTimeout(() => {
+    reject(1)
+  }, 1000);
+})).then((res) => {
+  console.log('resolve', res)
+}, err => {
+  console.log('reject', err)
+})
+
+// Promise.reject 测试用例5
+TPromise.reject('hah').then((res) => {
+  console.log('resolve', res)
+}, err => {
+  console.log('reject', err)
+})
+TPromise.reject(new TPromise((resolve, reject) => {
+  setTimeout(() => {
+    reject(1)
+  }, 1000);
+})).then((res) => {
+  console.log('resolve', res)
+}, err => {
+  console.log('reject', err)
+})
   </script>
 </body>
 </html>
