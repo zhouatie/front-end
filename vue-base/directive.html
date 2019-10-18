@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <div v-outside-click>
+      <button @click="isShow = !isShow" >点击</button>
+      <div ref="box" style="background: red;" v-if="isShow">haha</div>
+    </div>
+  </div>
+  <script>
+  Vue.directive('outsideClick', {
+    inserted(el, binding, node) {
+      console.log(el, binding, node)
+      document.addEventListener('click', (e) => {
+        console.log(this, 'this')
+        if (el.contains(e.target)) {
+          // console.log(node.context.isShow, 'node')
+          node.context.isShow = true
+        } else {
+          node.context.isShow = false
+        }
+      })
+    }
+  })
+  const vm = new Vue({
+    el: "#app",
+    data() {
+      return {
+        isShow: false
+      }
+    }
+  })
+  </script>
+</body>
+</html>
