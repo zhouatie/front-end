@@ -16,17 +16,20 @@
   </div>
   <script>
   Vue.directive('outsideClick', {
-    inserted(el, binding, node) {
+    bind(el, binding, node) {
       console.log(el, binding, node)
-      document.addEventListener('click', (e) => {
-        console.log(this, 'this')
+      el.fn = (e) => {
         if (el.contains(e.target)) {
           // console.log(node.context.isShow, 'node')
           node.context.isShow = true
         } else {
           node.context.isShow = false
         }
-      })
+      }
+      document.addEventListener('click', el.fn)
+    },
+    unbind(el) { // 事件绑定必须要解绑
+      document.removeEventListener('click', el.fn)
     }
   })
   const vm = new Vue({
