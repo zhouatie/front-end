@@ -9,14 +9,15 @@ app.get('*', (req, res) => {
     message: 'success'
   })
 })
-app.post('*', (req, res) => {
-  console.log(req.body)
-  console.log(req.params, 'params')
-  res.json({
-    code: 0,
-    message: 'success'
+app
+  .post('*', (req, res) => {
+    console.log(req.body)
+    console.log(req.params, 'params')
+    res.json({
+      code: 0,
+      message: 'success'
+    })
   })
-})
 
 app.listen(9000, () => {
   console.log('启动成功！')
