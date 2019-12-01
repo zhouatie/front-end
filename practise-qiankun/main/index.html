@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  下面是app应用
+  <script>
+    function loadapp(app) {
+      window.history.pushState({}, app, app);
+    }
+  window.onload = function() {
+    
+  }
+  </script>
+  <span onclick="loadapp('/vue1')">vue1</span>
+  <span onclick="loadapp('/vue2')">vue2</span>
+  <div id="app">container</div>
+</body>
+</html>
