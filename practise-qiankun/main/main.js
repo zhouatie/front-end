@@ -22,8 +22,11 @@ const request = url =>
 
 registerMicroApps(
   [
-    { name: 'vue app1', entry: '//localhost:8082', render, activeRule: genActiveRule('/vue1') },
-    { name: 'vue app2', entry: '//localhost:8081', render, activeRule: genActiveRule('/vue2') },
+    { name: 'react app', entry: '//localhost:7100', render, activeRule: genActiveRule('/react') },
+    { name: 'react15 app', entry: '//localhost:7102', render, activeRule: genActiveRule('/15react15') },
+    { name: 'vue app', entry: '//localhost:7101', render, activeRule: genActiveRule('/vue') },
+    // { name: 'vue app1', entry: '//localhost:8082', render, activeRule: genActiveRule('/vue1') },
+    // { name: 'vue app2', entry: '//localhost:8081', render, activeRule: genActiveRule('/vue2') },
   ],
   {
     beforeLoad: [
