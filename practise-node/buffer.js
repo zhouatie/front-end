@@ -9,3 +9,12 @@ console.log(0x11) // 十六进制
 
 const buffer = Buffer.from('珠')
 console.log(buffer)
+
+const buf1 = Buffer.from('珠峰前端课程')
+const buf2 = Buffer.from('前端')
+
+// buf1.write('后端', 3, 9, 'utf8')
+
+console.log(buf1.toString())
+
+console.log(buf1.indexOf(buf2))
