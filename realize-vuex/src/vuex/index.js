@@ -48,7 +48,6 @@ class Store {
   }
 
   dispatch(event, payload) {
-    console.log(event, 'event')
     if (isObject(event)) {
       const { type, ...res } = event;
       event = type;
