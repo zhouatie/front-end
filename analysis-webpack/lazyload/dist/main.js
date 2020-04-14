@@ -208,7 +208,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const btn = document.createElement('button')\nbtn.innerHTML = 'button'\n\nbtn.addEventListener('click', () => {\n  __webpack_require__.e(/*! import() | title */ \"title\").then(__webpack_require__.t.bind(null, /*! ./title.js */ \"./title.js\", 7)).then((res) => {\n    console.log(res, 'loaded title')\n  })\n})\ndocument.body.appendChild(btn)\n\n//# sourceURL=webpack:///./index.js?");
+eval("const btn = document.createElement('button')\nbtn.innerHTML = 'button'\n\nbtn.addEventListener('click', () => {\n  __webpack_require__.e(/*! import() | title */ \"title\").then(__webpack_require__.t.bind(null, /*! ./title.js */ \"./title.js\", 7)).then((res) => {\n    console.log(res, 'loaded title')\n  })\n  __webpack_require__.e(/*! import() | title */ \"title\").then(__webpack_require__.t.bind(null, /*! ./b.js */ \"./b.js\", 7)).then((res) => {\n    console.log(res, 'loaded b')\n  })\n})\ndocument.body.appendChild(btn)\n\n//# sourceURL=webpack:///./index.js?");
 
 /***/ })
 

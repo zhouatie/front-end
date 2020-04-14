@@ -11,6 +11,17 @@ eval("module.exports = 'this is a'\n\n//# sourceURL=webpack:///./a.js?");
 
 /***/ }),
 
+/***/ "./b.js":
+/*!**************!*\
+  !*** ./b.js ***!
+  \**************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = 'this is b'\n\n//# sourceURL=webpack:///./b.js?");
+
+/***/ }),
+
 /***/ "./title.js":
 /*!******************!*\
   !*** ./title.js ***!
