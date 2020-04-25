@@ -1,16 +1,23 @@
+import HashHistory from './history/hash';
+import install from './install.js';
+import createMatcher from './create-match';
+
 class VueRouter {
-  constructor() {}
+  constructor(options) {
+    this.history = new HashHistory(this);
+    this.match = createMatcher(options.routes);
+  }
+
+  init(app) {
+    console.log(app);
+    // const history = this.history;
+    // history.transitionTo(
+    //   history.getCurrentLocation(),
+    //   history.setupHashListener()
+    // );
+  }
 }
 
-VueRouter.install = (Vue) => {
-  Vue.mixin({
-    beforeCreate () {
-      if (this.$options.router) {
-        this._routerRroot = this;
-        this._rooter = this.router;
-      } else {
-        this._routerRroot = this.$parent
-      }
-    }
-  })
-}
+VueRouter.install = install;
+
+export default VueRouter;
