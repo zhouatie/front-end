@@ -1,8 +1,10 @@
 import History from './base';
 
+// base表示的是基类 我们所有实现的路由功能公共方法都可以放在History里
 class HashHistory extends History {
   constructor(router) {
     super(router);
+    this.router = router
   }
 
   getCurrentLocation() {
@@ -11,6 +13,7 @@ class HashHistory extends History {
   
   setupHashListener() {
     window.addEventListener('hashchange', (e) => {
+      console.log('hashchange')
       this.transitionTo(window.location.hash.slice(1));
     });
   }
