@@ -1,40 +1,48 @@
-export function createRoute (record, location) {
-  const res = []
+export function createRoute(record, location) {
+  const res = [];
   if (record) {
-    while(record) {
-      res.unshift(record)
-      record = record.parent
+    while (record) {
+      res.unshift(record);
+      record = record.parent;
     }
   }
 
   return {
     ...location,
-    matched: res
-  }
+    matched: res,
+  };
 }
 
 function ensureSlash() {
   if (window.location.hash) {
-    return
+    return;
   }
-  window.location.hash = '/'
+  window.location.hash = '/';
 }
 
 class History {
   constructor(router) {
-    this.router = router
+    this.router = router;
     this.current = createRoute(null, {
-      path: '/'
-    })
+      path: '/',
+    });
     // 保证有hash
-    ensureSlash()
+    ensureSlash();
   }
 
+  transitionTo(location, callback) {
+    //需要屏蔽多次相同的跳转
+    const r = this.router.match(location);
+    if (location === this.current.path && r.matched.length === this.current.matched.length) {
+      return
+    }
+    this.current = r
+    callback && callback();
+    this.cb && this.cb(this.current);
+  }
 
-  transitionTo(location, callback) { //需要屏蔽多次相同的跳转
-    console.log(this.router.match(location), 'www')
-    this.current = this.router.match(location)
-    callback && callback()
+  listen(cb) {
+    this.cb = cb;
   }
 }
 

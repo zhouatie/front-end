@@ -1,3 +1,6 @@
+import RouterView from './components/router-view';
+import RouterLink from './components/router-link';
+
 const install = (Vue) => {
   Vue.mixin({
     beforeCreate() {
@@ -6,35 +9,29 @@ const install = (Vue) => {
         // 保存根实例
         this._routerRoot = this;
         this._router = this.$options.router;
-        this._router.init();
+
+        // 给当前根实例增加了一个_route属性 他取自当前的history中的current
+        this._router.init(this);
+        Vue.util.defineReactive(this, '_route', this._router.history.current);
       } else {
         this._routerRoot = this.$parent && this.$parent._routerRoot;
       }
-      Object.defineProperty(this, '$router', {
-        get() {
-          console.log('historyrrr', this.history);
-          return this._routerRoot._router;
-        },
-      });
-      Object.defineProperty(this, '$route', {
-        get() {
-          return this.history.current;
-        },
-      });
+    }
+  });
+
+  Object.defineProperty(Vue.prototype, '$route', {
+    get() {
+      return this._routerRoot._route;
+    },
+  });
+  Object.defineProperty(Vue.prototype, '$router', {
+    get() {
+      return this._routerRoot._router;
     },
   });
 
-  Vue.component('router-view', {
-    render() {
-      console.log(this, 'ttt');
-      return <a>router</a>;
-    },
-  });
-  Vue.component('router-link', {
-    render() {
-      return <div>link</div>;
-    },
-  });
+  Vue.component('router-view', RouterView);
+  Vue.component('router-link', RouterLink);
 };
 
 export default install;

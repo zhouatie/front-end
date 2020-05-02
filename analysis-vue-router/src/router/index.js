@@ -3,7 +3,6 @@ import VueRouter from '../vue-router'
 // import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 
-console.log(VueRouter, 'VueRouter')
 Vue.use(VueRouter)
 
   const routes = [
@@ -24,14 +23,14 @@ Vue.use(VueRouter)
         path: 'a',
         name: 'about.a',
         component: {
-          template: '<div>a</div>'
+          render: (h) => <div>this is a</div>
         }
       },
       {
         path: 'b',
         name: 'about.b',
         component: {
-          template: '<div>b</div>'
+          render: (h) => <div>this is b</div>
         }
       }
     ]

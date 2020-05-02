@@ -10,9 +10,6 @@
 
 <script>
 export default {
-  mounted() {
-    console.log(this.$router, 'route1r')
-  }
 }
 </script>
 <style>

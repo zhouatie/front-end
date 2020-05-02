@@ -3,7 +3,6 @@ import { createRoute } from './history/base';
 
 export default function createMatcher(routes) {
   const { pathList, pathMap } = creatRouteMap(routes);
-  console.log(pathList, pathMap, 'xx');
   const addRoute = (routes) => {
     creatRouteMap(routes, pathList, pathMap);
   };
