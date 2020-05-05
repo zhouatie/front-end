@@ -4,16 +4,21 @@ export default {
       type: String,
       default: 'a',
     },
-    to: String,
+
+    to: {
+      type: String,
+      required: true,
+    },
   },
+
   methods: {
     handler() {
       this.$router.push(this.to);
     },
   },
+
   render() {
     const tag = this.tag;
-    console.log(this.$slots.default, 'this.$slots.default')
     return <tag onClick={this.handler}>{this.$slots.default}</tag>;
   },
 };
