@@ -6,7 +6,9 @@ app.use(async (ctx) => {
   ctx.body = 'hello world'
   console.log(ctx.body, 'ctx.body')
   console.log(ctx.response.body, 'response.body')
-  ctx.res.send('hello world');
+  ctx.body = 'hello zhou atie'
+  
+  // ctx.res.send('hello world');
 });
 
 app.listen(3000);
