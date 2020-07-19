@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    这是index.html 页面
+    <button id="btn">发起请求</button>
+    <script>
+      window.onload = () => {
+        document.querySelector('#btn').onclick = () => {
+          // const xhr = new XMLHttpRequest();
+          // xhr.open('POST', '/login', true);
+          // xhr.onload = function () {
+          //   console.log(xhr.responseText, 'responseText');
+          // };
+          // xhr.send('username=1&password=2');
+          axios.post('/login', {username: 1, password: 2}).then(res => {
+            console.log(res, 'rerere')
+          })
+        };
+      };
+    </script>
+  </body>
+</html>
