@@ -1,0 +1,40 @@
+#! /usr/bin/env node
+
+const program = require('commander');
+const path = require('path');
+const package = require('../package.json');
+const chalk = require('chalk');
+
+const parseArg = (cmd) => {
+  let args = {};
+  cmd.options.forEach((o) => {
+    const arg = o.long.slice(2);
+    if (cmd[arg]) args[arg] = cmd[arg];
+  });
+  console.log(args);
+  return args;
+};
+program
+  .command('create <app-name>')
+  .description('create project')
+  .option('-f, --force', 'overwrite target directory if it exists')
+  .action((name, cmd) => {
+    parseArg(cmd)
+    // console.log(name, 'name', cmd, ' cmd');
+  });
+
+program
+.command('config [value]')
+.description('config your config')
+.option('-g, --get <path>', 'get path value')
+.option('-s, --set <path> <val>', 'get path value')
+.action((value, cmd) => {
+  console.log(value, 'value')
+  parseArg(cmd)
+})
+
+program
+  .version(`\n${chalk.green(`atiecli version: v${package.version}`)}\n`)
+  .usage('<command> [option]');
+
+program.parse(process.argv);
