@@ -1,0 +1,4 @@
+/* eslint-disable */
+export default function sum(a, b) {
+  return a + b + 1;
+}
