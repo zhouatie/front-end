@@ -1,0 +1,9 @@
+{
+  "name": "_dll_lodash",
+  "content": {
+    "./node_modules/_lodash@4.17.21@lodash/lodash.js": {
+      "id": "./node_modules/_lodash@4.17.21@lodash/lodash.js",
+      "buildMeta": {}
+    }
+  }
+}
