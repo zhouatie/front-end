@@ -9,3 +9,7 @@ export function wrapToVdom(element){
     return (typeof element === 'string'||typeof element === 'number')
     ?{type:REACT_TEXT,props:{content:element}}:element;
 }
+
+export function isObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]'
+}

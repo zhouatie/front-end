@@ -1,14 +1,14 @@
 import React from './react';
 import ReactDOM from './react-dom';
 
-let element1 = (
-  <div className='title' style={{ color: 'red' }}>
-    world
-    <div>
-      ddd<i>aa</i>
+function FunctionComponent(props) {
+  return (
+    <div className='title' style={{ color: 'red' }}>
+      <span>{props.name}</span>
+      {props.children}
     </div>
-    <span>hello</span>
-  </div>
-);
-console.log(JSON.stringify(element1, null, 2), '-------------------');
-ReactDOM.render(element1, document.getElementById('root'));
+  );
+}
+let element = <FunctionComponent name='hello'>world</FunctionComponent>;
+console.log(JSON.stringify(element, null, 2), '---------JSON.stringify----------');
+ReactDOM.render(element, document.getElementById('root'));

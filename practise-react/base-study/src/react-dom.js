@@ -1,5 +1,5 @@
 import { REACT_TEXT } from './constants';
-
+import { isObject } from './utils';
 /**
  *
  *
@@ -21,11 +21,19 @@ function mount(vdom, container) {
   let elem = null;
   if (type === REACT_TEXT) {
     container.appendChild(document.createTextNode(props.content));
+  } else if (typeof type === 'function') {
+    const renderVdom = new type(props);
+    console.log(renderVdom, 'renderVdom---------');
+    mount(renderVdom, container);
   } else if (typeof type === 'string') {
     elem = document.createElement(type);
-    updateProps(props, elem);
-    updateChild(props.children, elem);
     container.appendChild(elem);
+    updateProps(props, elem);
+    if (isObject(props.children)) {
+      mount(props.children, elem);
+    } else if (Array.isArray(props.children)) {
+      updateChild(props.children, elem);
+    }
   }
   return elem;
 }
@@ -53,6 +61,7 @@ function updateProps(props, container) {
 }
 
 function updateChild(children, container) {
+  if (!children) return;
   console.log(children, container, '函数执行 ====》 updateChild');
   (children || []).forEach((child) => {
     mount(child, container);

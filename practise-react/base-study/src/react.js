@@ -1,4 +1,4 @@
-import { wrapToVdom } from './utils'
+import { wrapToVdom } from './utils';
 /**
  *创建vdom
  *
@@ -8,6 +8,7 @@ import { wrapToVdom } from './utils'
  * @returns
  */
 function createElement(type, config, children) {
+  console.log(Array.from(arguments), ' -----------aurguments----------------');
   let ref;
   let key;
   if (config) {
@@ -22,7 +23,7 @@ function createElement(type, config, children) {
   if (arguments.length > 3) {
     props.children = Array.prototype.slice.call(arguments, 2).map(wrapToVdom);
   } else {
-    props.children = [wrapToVdom(children)];
+    props.children = wrapToVdom(children);
   }
 
   const vdom = {
@@ -31,7 +32,7 @@ function createElement(type, config, children) {
     ref,
     key,
   };
-
+  console.log(vdom, '---------------- aurgumentr callback ---------------');
   return vdom;
 }
 
