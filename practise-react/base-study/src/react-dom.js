@@ -22,7 +22,7 @@ function mount(vdom, container) {
   if (type === REACT_TEXT) {
     container.appendChild(document.createTextNode(props.content));
   } else if (typeof type === 'function') {
-    const renderVdom = new type(props);
+    const renderVdom = type(props);
     console.log(renderVdom, 'renderVdom---------');
     mount(renderVdom, container);
   } else if (typeof type === 'string') {
