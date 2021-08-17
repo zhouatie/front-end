@@ -1,4 +1,6 @@
 import { wrapToVdom } from './utils';
+import { Component } from './Components';
+
 /**
  *创建vdom
  *
@@ -38,6 +40,7 @@ function createElement(type, config, children) {
 
 const obj = {
   createElement,
+  Component,
 };
 
 export default obj;

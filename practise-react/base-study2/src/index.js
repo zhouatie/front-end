@@ -1,15 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-
-function FunctionComponent(props) {
-  return (
-    <div className='title' style={{ color: 'red' }}>
-      <span>{props.name}</span>
-      {props.children}
-    </div>
-  );
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { number: 0 };
+  }
+  handleClick = () => {
+    this.setState({ number: this.state.number + 1 });
+    console.log(this.state);
+  };
+  render() {
+    return (
+      <div>
+        <p>{this.props.title}</p>
+        <p>number:{this.state.number}</p>
+        <button onClick={this.handleClick}>+</button>
+      </div>
+    );
+  }
 }
-let element = <FunctionComponent name='hello'>world</FunctionComponent>;
-console.log(JSON.stringify(element, null, 2), '---------JSON.stringify----------');
-ReactDOM.render(element, document.getElementById('root'));
+ReactDOM.render(<Counter title='计数器' />, document.getElementById('root'));
