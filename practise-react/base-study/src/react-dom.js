@@ -8,7 +8,7 @@ import { addEvent } from './event';
  * @param {*} root
  */
 function render(vdom, root) {
-  console.log(vdom, 'vdom');
+  // console.log(vdom, 'vdom');
   mount(vdom, root);
 }
 
@@ -18,7 +18,7 @@ function render(vdom, root) {
  */
 function mount(vdom, container) {
   const newDom = creatDom(vdom);
-  console.log(newDom, 'newDom');
+  // console.log(newDom, 'newDom');
   container.appendChild(newDom);
 }
 
@@ -29,7 +29,7 @@ function mount(vdom, container) {
  * @returns
  */
 function creatDom(vdom) {
-  console.log(vdom, '函数执行 ============> creatDom');
+  // console.log(vdom, '函数执行 ============> creatDom');
   const { type, props } = vdom;
   let elem = null;
 
@@ -51,7 +51,7 @@ function creatDom(vdom) {
     const instance = new type(props);
     const renderVdom = instance.render();
     instance.oldRenderVdom = renderVdom;
-    console.log(renderVdom, 'renderVdom---------');
+    // console.log(renderVdom, 'renderVdom---------');
     elem = creatDom(renderVdom);
     instance.oldRenderVdom.dom = elem;
     elem.instance = instance;
@@ -71,15 +71,14 @@ function creatDom(vdom) {
  * @param {*} oldProps
  */
 function updateProps(container, newProps, oldProps) {
-  console.log(container, newProps, oldProps, '函数执行 ====》 updateProps');
+  // console.log(container, newProps, oldProps, '函数执行 ====》 updateProps');
   // 如果老的属性不不存在了，就将他移除
   if (oldProps) {
     for (let key in oldProps) {
       if (!newProps.hasOwnProperty(key)) container.removeAttribute(key);
     }
   }
-  for (let key in newProps) {
-    console.log(key);
+  for (let key in newProps) {;
     if (key === 'children') continue;
     else if (key === 'style') {
       const style = newProps.style;
@@ -95,12 +94,12 @@ function updateProps(container, newProps, oldProps) {
 }
 
 function updateChild(container, newChildren, oldChildren) {
-  console.log(
-    container,
-    newChildren,
-    oldChildren,
-    '函数执行 ====》 updateChild'
-  );
+  // console.log(
+  //   container,
+  //   newChildren,
+  //   oldChildren,
+  //   '函数执行 ====》 updateChild'
+  // );
   if (isObject(newChildren)) newChildren = [newChildren];
   if (isObject(oldChildren)) oldChildren = [oldChildren];
   if (
@@ -133,7 +132,7 @@ function updateChild(container, newChildren, oldChildren) {
 }
 
 export function compareVdom(container, oldVdom, newVdom) {
-  console.log(container, oldVdom, newVdom, 'compareVdom 函数执行 ===========');
+  // console.log(container, oldVdom, newVdom, 'compareVdom 函数执行 ===========');
   if (!oldVdom && !newVdom) {
     return;
   } else if (!oldVdom && newVdom) {
@@ -150,7 +149,7 @@ export function compareVdom(container, oldVdom, newVdom) {
 }
 
 function updateElement(container, oldVdom, newVdom) {
-  console.log(container, oldVdom, newVdom, 'updateElement 函数执行===========');
+  // console.log(container, oldVdom, newVdom, 'updateElement 函数执行===========');
   if (oldVdom.type === REACT_TEXT && newVdom.type === REACT_TEXT) {
     // debugger;
     container.innerText = newVdom.props.content;

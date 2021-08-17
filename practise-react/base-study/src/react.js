@@ -10,7 +10,7 @@ import { Component } from './Components';
  * @returns
  */
 function createElement(type, config, children) {
-  console.log(Array.from(arguments), ' -----------aurguments----------------');
+  // console.log(Array.from(arguments), ' -----------aurguments----------------');
   let ref;
   let key;
   if (config) {
@@ -34,7 +34,7 @@ function createElement(type, config, children) {
     ref,
     key,
   };
-  console.log(vdom, '---------------- aurgumentr callback ---------------');
+  // console.log(vdom, '---------------- aurgumentr callback ---------------');
   return vdom;
 }
 

@@ -12,6 +12,15 @@ class Counter extends React.Component {
     console.log(this.state, 'this.state');
     this.setState({ number: this.state.number + 1 });
     console.log(this.state, 'this.state');
+    setTimeout(() => {
+    debugger;
+
+      console.log(this.state, 'setTimeout');
+      this.setState({ number: this.state.number + 1 });
+      console.log(this.state, 'setTimeout');
+      this.setState({ number: this.state.number + 1 });
+      console.log(this.state, 'setTimeout');
+    });
   };
   render() {
     return (
@@ -23,6 +32,4 @@ class Counter extends React.Component {
     );
   }
 }
-const obj = <Counter title='计数器' />
-console.log(obj, 'obj')
-ReactDOM.render(obj, document.getElementById('root'));
+ReactDOM.render(<Counter title='计数器' />, document.getElementById('root'));

@@ -6,8 +6,18 @@ class Counter extends React.Component {
     this.state = { number: 0 };
   }
   handleClick = () => {
+    console.log('handleClick', 'handleClick');
     this.setState({ number: this.state.number + 1 });
-    console.log(this.state);
+    console.log(this.state, 'this.state');
+    this.setState({ number: this.state.number + 1 });
+    console.log(this.state, 'this.state');
+    setTimeout(() => {
+      console.log(this.state, 'setTimeout');
+      this.setState({ number: this.state.number + 1 });
+      console.log(this.state);
+      this.setState({ number: this.state.number + 1 });
+      console.log(this.state);
+    });
   };
   render() {
     return (
