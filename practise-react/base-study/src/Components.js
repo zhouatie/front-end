@@ -23,8 +23,14 @@ class Updater {
   update() {
     // console.log('函数执行 ===> update()');
     Object.assign(this.instance.state, ...this.states);
-    // console.log(this.instance.state, 'this.instance.state');
-    this.instance.forceUpdate();
+    let bool = true;
+    if (this.instance.shouldComponentUpdate) {
+      bool = this.instance.shouldComponentUpdate(
+        this.instance.props,
+        this.instance.state
+      );
+    }
+    bool && this.instance.forceUpdate();
   }
   addState(newState) {
     this.states.push(newState);
@@ -60,10 +66,12 @@ export class Component {
   }
 
   updateComponent() {
+    if (this.componentWillUpdate) this.componentWillUpdate();
     const newRenderVdom = this.render();
     // debugger;
     const oldRenderVdom = this.oldRenderVdom;
     const dom = oldRenderVdom.dom;
     compareVdom(dom.parentNode, oldRenderVdom, newRenderVdom);
+    if (this.componentDidUpdate) this.componentDidUpdate();
   }
 }

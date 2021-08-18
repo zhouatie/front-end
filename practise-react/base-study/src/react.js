@@ -21,6 +21,7 @@ function createElement(type, config, children) {
     key = config.key;
     delete config.key;
   }
+  // console.log(ref, 'reff')
   const props = { ...config };
   if (arguments.length > 3) {
     props.children = Array.prototype.slice.call(arguments, 2).map(wrapToVdom);
@@ -38,9 +39,16 @@ function createElement(type, config, children) {
   return vdom;
 }
 
-const obj = {
+function createRef() {
+  return {
+    current: null,
+  };
+}
+
+const React = {
   createElement,
   Component,
+  createRef,
 };
 
-export default obj;
+export default React;

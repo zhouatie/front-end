@@ -1,32 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-class Counter extends React.Component {
+class Sum extends React.Component {
+  a;
+  b;
+  result;
   constructor(props) {
     super(props);
-    this.state = { number: 0 };
+    this.a = React.createRef();
+    this.b = React.createRef();
+    this.result = React.createRef();
   }
-  handleClick = () => {
-    console.log('handleClick', 'handleClick');
-    this.setState({ number: this.state.number + 1 });
-    console.log(this.state, 'this.state');
-    this.setState({ number: this.state.number + 1 });
-    console.log(this.state, 'this.state');
-    setTimeout(() => {
-      console.log(this.state, 'setTimeout');
-      this.setState({ number: this.state.number + 1 });
-      console.log(this.state);
-      this.setState({ number: this.state.number + 1 });
-      console.log(this.state);
-    });
+  handleAdd = () => {
+    let a = this.a.current.value;
+    let b = this.b.current.value;
+    this.result.current.value = a + b;
   };
   render() {
     return (
-      <div>
-        <p>{this.props.title}</p>
-        <p>number:{this.state.number}</p>
-        <button onClick={this.handleClick}>+</button>
-      </div>
+      <>
+        <input ref={this.a} />+<input ref={this.b} />
+        <button onClick={this.handleAdd}>=</button>
+        <input ref={this.result} />
+      </>
     );
   }
 }
-ReactDOM.render(<Counter title='计数器' />, document.getElementById('root'));
+ReactDOM.render(<Sum />, document.getElementById('root'));

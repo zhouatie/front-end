@@ -30,9 +30,9 @@ function mount(vdom, container) {
  */
 function creatDom(vdom) {
   // console.log(vdom, '函数执行 ============> creatDom');
-  const { type, props } = vdom;
+  const { type, props, ref } = vdom;
   let elem = null;
-
+  let instance;
   if (type === REACT_TEXT) {
     // 文本渲染
     elem = document.createTextNode(props.content);
@@ -44,22 +44,33 @@ function creatDom(vdom) {
     if (isObject(props.children)) {
       mount(props.children, elem);
     } else if (Array.isArray(props.children)) {
-      updateChild(elem, props.children);
+      reconcileChildren(elem, props.children);
     }
   } else if (typeof type === 'function' && type.isReactComponent) {
     // 类组件
-    const instance = new type(props);
+    instance = new type(props);
+
+    if (instance.componentWillMount) {
+      instance.componentWillMount();
+    }
+
     const renderVdom = instance.render();
     instance.oldRenderVdom = renderVdom;
     // console.log(renderVdom, 'renderVdom---------');
     elem = creatDom(renderVdom);
     instance.oldRenderVdom.dom = elem;
     elem.instance = instance;
+
+    if (instance.componentDidMount) {
+      instance.componentDidMount();
+    }
   } else if (typeof type === 'function') {
     // 函数式组件
     const renderVdom = type(props);
     elem = creatDom(renderVdom);
   }
+  if (ref) ref.current = type.isReactComponent ? instance : elem;
+
   return elem;
 }
 
@@ -78,7 +89,7 @@ function updateProps(container, newProps, oldProps) {
       if (!newProps.hasOwnProperty(key)) container.removeAttribute(key);
     }
   }
-  for (let key in newProps) {;
+  for (let key in newProps) {
     if (key === 'children') continue;
     else if (key === 'style') {
       const style = newProps.style;
@@ -91,6 +102,13 @@ function updateProps(container, newProps, oldProps) {
       addEvent(container, key, newProps[key]);
     }
   }
+}
+
+function reconcileChildren(container, children) {
+  if (isObject(children)) children = [children];
+  children.forEach((child) => {
+    mount(child, container);
+  });
 }
 
 function updateChild(container, newChildren, oldChildren) {
