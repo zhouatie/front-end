@@ -166,6 +166,10 @@ export function compareVdom(container, oldVdom, newVdom) {
   }
 }
 
+function updateClassComponent() {
+
+}
+
 function updateElement(container, oldVdom, newVdom) {
   // console.log(container, oldVdom, newVdom, 'updateElement 函数执行===========');
   if (oldVdom.type === REACT_TEXT && newVdom.type === REACT_TEXT) {
@@ -174,6 +178,9 @@ function updateElement(container, oldVdom, newVdom) {
   } else if (typeof oldVdom.type === 'string') {
     updateProps(newVdom.dom, newVdom.props, oldVdom.props);
     updateChild(newVdom.dom, oldVdom.props.children, newVdom.props.children);
+  } else if (typeof oldVdom.type === 'function') {
+    console.log(container, oldVdom, newVdom)
+    debugger
   }
 }
 const obj = {

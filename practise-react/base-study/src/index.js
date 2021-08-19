@@ -38,9 +38,35 @@ class Counter extends React.Component {
     return (
       <div>
         <p>{this.state.number}</p>
+        {this.state.number === 4 ? null : (
+          <ChildCounter count={this.state.number} />
+        )}
         <button onClick={this.handleClick}>+</button>
       </div>
     );
+  }
+}
+class ChildCounter extends React.Component {
+  componentWillUnmount() {
+    console.log(' ChildCounter 6.componentWillUnmount');
+  }
+  componentWillMount() {
+    console.log('ChildCounter 1.componentWillMount');
+  }
+  render() {
+    console.log('ChildCounter 2.render');
+    return <div>{this.props.count}</div>;
+  }
+  componentDidMount() {
+    console.log('ChildCounter 3.componentDidMount');
+  }
+  componentWillReceiveProps(newProps) {
+    // 第一次不会执行，之后属性更新时才会执行
+    console.log('ChildCounter 4.componentWillReceiveProps');
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('ChildCounter 5.shouldComponentUpdate');
+    return nextProps.count % 3 === 0; //子组件判断接收的属性 是否满足更新条件 为true则更新
   }
 }
 ReactDOM.render(<Counter />, document.getElementById('root'));
