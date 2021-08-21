@@ -161,7 +161,7 @@ export function compareVdom(container, oldVdom, newVdom, nextDom) {
   } else if (!oldVdom && newVdom) {
     mount(newVdom, container);
   } else if (oldVdom && !newVdom) {
-    if (oldVdom.instance.componentWillUnmount)
+    if (oldVdom.instance && oldVdom.instance.componentWillUnmount)
       oldVdom.instance.componentWillUnmount();
     const dom = findDom(oldVdom);
     dom.remove();
