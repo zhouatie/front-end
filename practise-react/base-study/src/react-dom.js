@@ -18,7 +18,6 @@ function render(vdom, root) {
  */
 function mount(vdom, container) {
   const newDom = creatDom(vdom);
-  // console.log(newDom, 'newDom');
   container.appendChild(newDom);
 }
 
@@ -49,17 +48,15 @@ function creatDom(vdom) {
   } else if (typeof type === 'function' && type.isReactComponent) {
     // 类组件
     instance = new type(props);
-
+    vdom.instance = instance;
     if (instance.componentWillMount) {
       instance.componentWillMount();
     }
 
     const renderVdom = instance.render();
     instance.oldRenderVdom = renderVdom;
-    // console.log(renderVdom, 'renderVdom---------');
     elem = creatDom(renderVdom);
-    instance.oldRenderVdom.dom = elem;
-    elem.instance = instance;
+    instance.dom = elem;
 
     if (instance.componentDidMount) {
       instance.componentDidMount();
@@ -151,12 +148,19 @@ function updateChild(container, newChildren, oldChildren) {
 
 export function compareVdom(container, oldVdom, newVdom) {
   // console.log(container, oldVdom, newVdom, 'compareVdom 函数执行 ===========');
+
   if (!oldVdom && !newVdom) {
     return;
   } else if (!oldVdom && newVdom) {
     mount(newVdom, container);
   } else if (oldVdom && !newVdom) {
-    oldVdom.dom.remove();
+    if (oldVdom.instance.componentWillUnmount)
+      oldVdom.instance.componentWillUnmount();
+    const dom = findDom(oldVdom);
+    dom.remove();
+  } else if (oldVdom.type === REACT_TEXT && newVdom.type === REACT_TEXT) {
+    // debugger;
+    container.innerText = newVdom.props.content;
   } else if (oldVdom.type !== newVdom.type) {
     const newDom = creatDom(newVdom);
     const oldDom = oldVdom.dom;
@@ -166,22 +170,27 @@ export function compareVdom(container, oldVdom, newVdom) {
   }
 }
 
-function updateClassComponent() {
-
+function updateClassComponent(oldVdom, newVdom) {
+  const instance = (newVdom.instance = oldVdom.instance);
+  console.log(newVdom.props, 'newVdom.props');
+  instance.updater.EmitUpdate(newVdom.props);
 }
 
 function updateElement(container, oldVdom, newVdom) {
   // console.log(container, oldVdom, newVdom, 'updateElement 函数执行===========');
-  if (oldVdom.type === REACT_TEXT && newVdom.type === REACT_TEXT) {
-    // debugger;
-    container.innerText = newVdom.props.content;
-  } else if (typeof oldVdom.type === 'string') {
-    updateProps(newVdom.dom, newVdom.props, oldVdom.props);
-    updateChild(newVdom.dom, oldVdom.props.children, newVdom.props.children);
+  if (typeof oldVdom.type === 'string') {
+    const dom = (newVdom.dom = findDom(oldVdom));
+    updateProps(dom, newVdom.props, oldVdom.props);
+    updateChild(dom, newVdom.props.children, oldVdom.props.children);
   } else if (typeof oldVdom.type === 'function') {
-    console.log(container, oldVdom, newVdom)
-    debugger
+    updateClassComponent(oldVdom, newVdom);
   }
+}
+
+function findDom(vdom) {
+  if (vdom.dom) {
+    return vdom.dom;
+  } else if (vdom.instance) return vdom.instance.dom;
 }
 const obj = {
   render,
