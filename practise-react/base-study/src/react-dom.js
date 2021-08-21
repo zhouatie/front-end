@@ -138,19 +138,26 @@ function updateChild(container, newChildren, oldChildren) {
     // debugger
     const maxLength = Math.max(newChildren.length, oldChildren.length);
     for (let i = 0; i < maxLength; i++) {
-      const nextDom = oldChildren.find(
-        (item, index) => index > i && item && item.dom
+      const nextVDom = oldChildren.find(
+        (item, index) =>
+          index > i && item && oldChildren[index] && findDom(oldChildren[index])
       );
+      const nextDom = nextVDom && findDom(nextVDom);
       compareVdom(container, oldChildren[i], newChildren[i], nextDom);
     }
   }
 }
 
 export function compareVdom(container, oldVdom, newVdom) {
+export function compareVdom(container, oldVdom, newVdom, nextDom) {
   // console.log(container, oldVdom, newVdom, 'compareVdom 函数执行 ===========');
 
   if (!oldVdom && !newVdom) {
     return;
+  } else if (!oldVdom && newVdom && nextDom) {
+    console.log(nextDom, 'nextDom');
+    const newDom = creatDom(newVdom);
+    container.insertBefore(newDom, nextDom);
   } else if (!oldVdom && newVdom) {
     mount(newVdom, container);
   } else if (oldVdom && !newVdom) {
