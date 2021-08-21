@@ -104,7 +104,11 @@ function updateProps(container, newProps, oldProps) {
 function reconcileChildren(container, children) {
   if (isObject(children)) children = [children];
   children.forEach((child) => {
-    mount(child, container);
+    if (isArray(child)) {
+      reconcileChildren(container, child);
+    } else {
+      mount(child, container);
+    }
   });
 }
 
@@ -134,21 +138,51 @@ function updateChild(container, newChildren, oldChildren) {
       child.remove();
     });
   } else if (newChildren.length && oldChildren.length) {
-    // const isAllText = newChildren.find((item) => item.type === REACT_TEXT);
-    // debugger
-    const maxLength = Math.max(newChildren.length, oldChildren.length);
-    for (let i = 0; i < maxLength; i++) {
-      const nextVDom = oldChildren.find(
-        (item, index) =>
-          index > i && item && oldChildren[index] && findDom(oldChildren[index])
-      );
-      const nextDom = nextVDom && findDom(nextVDom);
-      compareVdom(container, oldChildren[i], newChildren[i], nextDom);
-    }
+    domDiff(container, oldChildren, newChildren);
   }
 }
 
-export function compareVdom(container, oldVdom, newVdom) {
+function domDiff(container, oldChildren, newChildren) {
+  let lastPlaceIndex = -1;
+  for (let i = 0; i < newChildren.length; i++) {
+    let newKey;
+    const newVdom = newChildren[i];
+    if (newVdom) {
+      newKey = newVdom.key;
+    }
+    const hadSameKeyElemIndex = oldChildren.findIndex((o) => o.key && o.key === newKey);
+
+    if (
+      newKey && hadSameKeyElemIndex >= lastPlaceIndex &&
+      oldChildren[hadSameKeyElemIndex].type === newVdom.type
+    ) {
+      lastPlaceIndex = hadSameKeyElemIndex;
+      compareVdom(container, oldChildren[hadSameKeyElemIndex], newVdom);
+    } else if (
+      hadSameKeyElemIndex >= 0 &&
+      hadSameKeyElemIndex < lastPlaceIndex
+    ) {
+      const newDom = findDom(oldChildren[hadSameKeyElemIndex]);
+      const oldDom = findDom(oldChildren[lastPlaceIndex + 1]);
+      container.insertBefore(newDom, oldDom);
+      compareVdom(container, oldChildren[hadSameKeyElemIndex], newVdom);
+
+    } else if (newKey && hadSameKeyElemIndex < 0) {
+      const newDom = creatDom(newVdom);
+      const oldDom = findDom(oldChildren[lastPlaceIndex + 1]);
+      container.insertBefore(newDom, oldDom);
+    } else if (!newKey) {
+      compareVdom(container, oldChildren[++lastPlaceIndex], newVdom);
+    }
+  }
+  container.children.forEach((child) => {
+    const item = newChildren.find(o => findDom(o) === child)
+    if (!item) {
+      child.remove();
+    }
+  });
+}
+
 export function compareVdom(container, oldVdom, newVdom, nextDom) {
   // console.log(container, oldVdom, newVdom, 'compareVdom 函数执行 ===========');
 
@@ -166,8 +200,7 @@ export function compareVdom(container, oldVdom, newVdom, nextDom) {
     const dom = findDom(oldVdom);
     dom.remove();
   } else if (oldVdom.type === REACT_TEXT && newVdom.type === REACT_TEXT) {
-    // debugger;
-    container.innerText = newVdom.props.content;
+    if (oldVdom.props.content !== newVdom.props.content) container.innerText = newVdom.props.content;
   } else if (oldVdom.type !== newVdom.type) {
     const newDom = creatDom(newVdom);
     const oldDom = oldVdom.dom;

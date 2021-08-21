@@ -1,4 +1,4 @@
-import { wrapToVdom } from './utils';
+import { wrapToVdom, isArray } from './utils';
 import { Component } from './Components';
 
 /**
@@ -24,7 +24,12 @@ function createElement(type, config, children) {
   // console.log(ref, 'reff')
   const props = { ...config };
   if (arguments.length > 3) {
-    props.children = Array.prototype.slice.call(arguments, 2).map(wrapToVdom);
+    const arr = [];
+    Array.prototype.slice.call(arguments, 2).forEach((o) => {
+      isArray(o) ? arr.push(...o) : arr.push(o);
+    });
+
+    props.children = arr.map(wrapToVdom);
   } else {
     props.children = wrapToVdom(children);
   }
