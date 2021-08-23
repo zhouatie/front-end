@@ -1,6 +1,21 @@
 import { wrapToVdom, isArray } from './utils';
 import { Component } from './Components';
 
+function createContext(context) {
+  let _context = context || {};
+  function Provider(props) {
+    Object.assign(_context || {}, props.value || {});
+    return props.children;
+  }
+  function Consumer(props) {
+    return props.children(_context);
+  }
+  return {
+    Provider,
+    Consumer,
+  };
+}
+
 /**
  *创建vdom
  *
@@ -54,6 +69,7 @@ const React = {
   createElement,
   Component,
   createRef,
+  createContext,
 };
 
 export default React;

@@ -64,6 +64,7 @@ function creatDom(vdom) {
   } else if (typeof type === 'function') {
     // 函数式组件
     const renderVdom = type(props);
+    vdom.oldRenderVdom = renderVdom;
     elem = creatDom(renderVdom);
   }
   if (ref) ref.current = type.isReactComponent ? instance : elem;
@@ -150,10 +151,13 @@ function domDiff(container, oldChildren, newChildren) {
     if (newVdom) {
       newKey = newVdom.key;
     }
-    const hadSameKeyElemIndex = oldChildren.findIndex((o) => o.key && o.key === newKey);
+    const hadSameKeyElemIndex = oldChildren.findIndex(
+      (o) => o.key && o.key === newKey
+    );
 
     if (
-      newKey && hadSameKeyElemIndex >= lastPlaceIndex &&
+      newKey &&
+      hadSameKeyElemIndex >= lastPlaceIndex &&
       oldChildren[hadSameKeyElemIndex].type === newVdom.type
     ) {
       lastPlaceIndex = hadSameKeyElemIndex;
@@ -166,7 +170,6 @@ function domDiff(container, oldChildren, newChildren) {
       const oldDom = findDom(oldChildren[lastPlaceIndex + 1]);
       container.insertBefore(newDom, oldDom);
       compareVdom(container, oldChildren[hadSameKeyElemIndex], newVdom);
-
     } else if (newKey && hadSameKeyElemIndex < 0) {
       const newDom = creatDom(newVdom);
       const oldDom = findDom(oldChildren[lastPlaceIndex + 1]);
@@ -176,7 +179,7 @@ function domDiff(container, oldChildren, newChildren) {
     }
   }
   container.children.forEach((child) => {
-    const item = newChildren.find(o => findDom(o) === child)
+    const item = newChildren.find((o) => findDom(o) === child);
     if (!item) {
       child.remove();
     }
@@ -200,7 +203,8 @@ export function compareVdom(container, oldVdom, newVdom, nextDom) {
     const dom = findDom(oldVdom);
     dom.remove();
   } else if (oldVdom.type === REACT_TEXT && newVdom.type === REACT_TEXT) {
-    if (oldVdom.props.content !== newVdom.props.content) container.innerText = newVdom.props.content;
+    if (oldVdom.props.content !== newVdom.props.content)
+      container.innerText = newVdom.props.content;
   } else if (oldVdom.type !== newVdom.type) {
     const newDom = creatDom(newVdom);
     const oldDom = oldVdom.dom;
@@ -215,6 +219,12 @@ function updateClassComponent(oldVdom, newVdom) {
   console.log(newVdom.props, 'newVdom.props');
   instance.updater.EmitUpdate(newVdom.props);
 }
+function updateFunctionComponent(container, oldVdom, newVdom) {
+  console.log(oldVdom, newVdom);
+  const newRenderVdom = newVdom.type(newVdom.props);
+  compareVdom(container, oldVdom.oldRenderVdom, newRenderVdom);
+  newVdom.oldRenderVdom = newRenderVdom;
+}
 
 function updateElement(container, oldVdom, newVdom) {
   // console.log(container, oldVdom, newVdom, 'updateElement 函数执行===========');
@@ -222,8 +232,13 @@ function updateElement(container, oldVdom, newVdom) {
     const dom = (newVdom.dom = findDom(oldVdom));
     updateProps(dom, newVdom.props, oldVdom.props);
     updateChild(dom, newVdom.props.children, oldVdom.props.children);
-  } else if (typeof oldVdom.type === 'function') {
+  } else if (
+    typeof oldVdom.type === 'function' &&
+    oldVdom.type.isReactComponent
+  ) {
     updateClassComponent(oldVdom, newVdom);
+  } else if (typeof oldVdom.type === 'function') {
+    updateFunctionComponent(container, oldVdom, newVdom);
   }
 }
 
