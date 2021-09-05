@@ -1,2 +1,1 @@
-var married = false;
-console.log(married);
+var myColors = [0 /* Red */, 1 /* Yellow */, 2 /* Blue */];
