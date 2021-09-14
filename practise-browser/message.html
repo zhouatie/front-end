@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 1. BroadcastChannel
+      // const bs = new BroadcastChannel('atie');
+      // bs.postMessage({
+      //   name: 'zhou',
+      // });
+
+      // 2. service Worker
+      /* 页面逻辑 */
+      // navigator.serviceWorker.register('./util.sw.js').then(function () {
+      //   console.log('Service Worker 注册成功');
+      // });
+      /* 页面逻辑 */
+      // navigator.serviceWorker.addEventListener('message', function (e) {
+      //   const data = e.data;
+      //   const text = '[receive] ' + data.msg + ' —— tab ' + data.from;
+      //   console.log('[Service Worker] receive message:', text);
+      // });
+      // const mydata = {
+      //   msg: 'this is msg',
+      //   from: 'message.html',
+      // };
+      // navigator.serviceWorker.controller.postMessage(mydata);
+      // 3. localStorage
+      // window.addEventListener('storage', function (e) {
+      //   console.log(e, 'e');
+      //   if (e.key === 'ctc-msg') {
+      //     const data = JSON.parse(e.newValue);
+      //     const text = '[receive] ' + data.msg + ' —— tab ' + data.from;
+      //     console.log('[Storage I] receive message:', text);
+      //   }
+      // });
+      const sharedWorker = new SharedWorker('./util.shared.js', 'ctc');
+      // 定时轮询，发送 get 指令的消息
+      setInterval(function () {
+        sharedWorker.port.postMessage({ get: true });
+      }, 1000);
+
+      // 监听 get 消息的返回数据
+      sharedWorker.port.addEventListener(
+        'message',
+        (e) => {
+          const data = e.data;
+          const text = '[receive] ' + data.msg + ' —— tab ' + data.from;
+          console.log('[Shared Worker] receive message:', text);
+        },
+        false
+      );
+      sharedWorker.port.start();
+      const mydata = {
+        msg: 'this is msg',
+        from: 'message.html',
+      };
+      sharedWorker.port.postMessage(mydata);
+    </script>
+  </body>
+</html>

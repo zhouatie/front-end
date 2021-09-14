@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      .wrap {
+        width: 100px;
+        height: 30px;
+      }
+      .wrap div {
+        width: 100%;
+        height: 100%;
+        transition: 1s;
+        background-color: gray;
+      }
+      .wrap div:before {
+        content: '';
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        background-color: white;
+        transform: translate(1px, 1px);
+        transition: 1s;
+      }
+      .wrap div.active {
+        background: green;
+      }
+      .wrap div.active::before {
+        margin-left: calc(100% - 31px);
+      }
+    </style>
+    <div class="wrap">
+      <div id="btn"></div>
+      <!-- <script>
+        const btn = document.querySelector('#btn');
+        btn.onclick = function () {
+          const className = btn.getAttribute('class');
+          console.log(className, 'className');
+          if (className && className.includes('active')) {
+            btn.setAttribute('class', '');
+          } else btn.setAttribute('class', 'active');
+        };
+      </script>
+      <script>
+        var result = [];
+        var a = 3;
+        var total = 0;
+        function foo(a) {
+          var i = 0;
+          for (; i < 3; i++) {
+            result[i] = function () {
+              total += i * a;
+              console.log(total);
+            };
+          }
+        }
+        foo(1);
+        result[0]();
+        result[1]();
+        result[2]();
+        var i = 0;
+        for (; i < 3; ) {
+          result[i] = function () {
+            total += i * a;
+            console.log(total);
+          };
+          i++;
+        }
+        // 闭包，函数创建的时候，执行上下文已经保存在自己的作用域链
+      </script>
+      <script>
+        console.log('script start', 1);
+
+        async function async1() {
+          console.log('async1 start', 2);
+          await async2();
+          console.log('async1 end', 6);
+        }
+        async function async2() {
+          console.log('async2', 3);
+        }
+
+        setTimeout(function () {
+          console.log('setTimeout', 8);
+        }, 0);
+
+        async1();
+
+        new Promise(function (resolve) {
+          console.log('promise1', 4);
+          resolve();
+        }).then(function () {
+          console.log('promise2', 7);
+        });
+
+        console.log('script end', 5);
+      </script> -->
+      <!-- <script>
+        var root = {
+          val: 1,
+          left: {
+            val: 2,
+            left: {
+              val: 4,
+              right: null,
+              left: null,
+            },
+            right: {
+              val: 5,
+              right: null,
+              left: null,
+            },
+          },
+          right: {
+            val: 3,
+            left: null,
+            right: null,
+          },
+        };
+        let total = 0;
+        let r = 0;
+        let l = 0;
+        function sum(obj, a) {
+          // debugger;
+          console.log(obj, 'ojb');
+          if (!obj || !obj.val) return 0;
+          let v = 1;
+          if (a === 'right') {
+            r += 1;
+            v = 10 ** r;
+          } else if (a === 'left') {
+            l += 1;
+            v = 10 ** l;
+          }
+          const right = sum(obj.right, 'right');
+          const left = sum(obj.left, 'left');
+          const total = obj.val / v + (right + left) / 10;
+          console.log(total, right, left, 'total ====');
+          return total;
+        }
+        total = sum(root);
+        console.log(total, r, l);
+      </script> -->
+      <!-- <script>
+        Array.prototype.sum = function() {
+          console.log(this, 'this')
+          return this.reduce((total, item) => {
+            console.log(total, item)
+            total += item;
+            return total;
+          }, 0)
+        }
+        var arr = [1,2,3,4]
+        console.log(arr.sum(), 'sum')
+      </script> -->
+      <!-- <script>
+        function promisify(fn) {
+          return new Promise((resolve, reject) => {
+            fn(params1, function(err, data) {
+              cb(err, data);
+              if (err) {
+                reject(err)
+              } else {
+                resolve(data);
+              }
+            })
+          })
+        }
+
+        function fn(param1, cb) {
+        }
+
+        fs.readFile(path, cb)
+
+        function cb(err, data) {
+        }
+        const f = promisify(fn)
+
+        f(param1)
+        .then(data => {})
+        .catch(err => {})
+      </script> -->
+      <!-- <script>
+        // 现在要求在本地机器上实现一个 sum 函数，支持以下用法：https://jsbin.com/muhufegomo/3/edit?html,js,console,output
+        function sum() {
+          const params = Array.prototype.slice.call(arguments)
+          return params.reduce((total, item) => total + item, 0)
+        }
+        (async () => {
+          const result1 = await sum(1, 4, 6, 9, 2, 4);
+          const result2 = await sum(3, 4, 9, 2, 5, 3, 2, 1, 7);
+          const result3 = await sum(1, 6, 0, 5);
+          console.log([result1, result2, result3]); // [26, 36, 12]
+        })();
+
+        // 要求 sum 能在最短的时间里返回以上结果
+      </script> -->
+    </div>
+  </body>
+</html>
