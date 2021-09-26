@@ -17,3 +17,30 @@ function debounce(fn, wait, immediate) {
     }, wait)
   }
 }
+
+function debounce(fn, wait, immediate) {
+  let timer,context,arg;
+  let later = () => setTimeout(() => {
+    timer = null;
+    if (!immediate) {
+      fn.apply(context, arg);
+    }
+  }, wait)
+  
+  return function(...params) {
+    if (!timer) {
+      timer = later();
+      if (immediate) {
+        fn.apply(this, params)
+      } else {
+        arg = params;
+        context = this;
+      }
+    } else {
+      clearTimeout(timer)
+      timer = later();
+    }
+  }
+}
+
+console.log(lodash, 'lodash')
