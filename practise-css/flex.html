@@ -29,5 +29,27 @@
     <div class="child">15</div>
     <div class="child">1</div>
   </div>
+  <style>
+    .flex {
+      display: flex;
+      border: 1px solid black;
+    }
+    .flex div:nth-of-type(2) {
+      flex: 1;
+    }
+    .flex div:first-child {
+      width: 100px;
+      border: 1px solid green;
+    }
+    .flex div:last-child {
+      width: 100px;
+      border: 1px solid green;
+    }
+  </style>
+  <div class="flex">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+  </div>
 </body>
 </html>
